@@ -12,8 +12,14 @@
   colorlinks=true,
 }
 
+\usepackage[parfill]{parskip}
+
 \newcommand\blankpage{%
   \null{}
   \thispagestyle{empty}%
   \addtocounter{page}{-1}%
   \newpage}
+
+\usepackage{titlesec}
+
+\titleformat{\chapter}[display]{\normalfont\bfseries}{}{0pt}{\Huge}
