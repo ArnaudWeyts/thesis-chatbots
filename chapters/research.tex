@@ -9,7 +9,7 @@ This thesis will start with some use cases for chatbots. When it would be a good
 Already existing chatbots will be presented and compared to paint a picture of what a professional chatbot currently looks like.
 Some general research into chatbot best practices and worst practices will also be conducted based on these real life cases and studies.
 
-Finally, different platforms and frameworks to create a fully-fledged chatbot will be compared by building one.
+Finally, different platforms and frameworks to create a fully-fledged chatbot will be compared by building similar small chatbots.
 
 \section{Metrics}
 
@@ -97,4 +97,45 @@ The language recognition seems to be focused on single word recognition to link 
 
 \section{Best and worst practices}
 
-Work in progress.
+\subsection{Creating a personality}
+
+One of the most important factors in creating a chatbot is to develop a personality for it. This makes the bot a lot more engaging to the users and makes it harder for the user to get frustrated.
+
+If there is already a company personality in place, the chatbot should get its traits there. If that's not the case, adding a name or a face, which doesn't necessarily have to be human, to it can already be a huge help.
+
+\subsection{Making the conversation flow}
+
+Conversations with a chatbot aren't as straight forward as they seem to be. Users can easily get distracted, overwhelmed or annoyed by your chatbot.
+
+That's why research and a lot of testing should be conducted into the conversational flow. An bad example of this is not having any wait time between messages. This overwhelms the user as he doesn't have time to read the previous message. Adding typing bubbles between messages not only gives the user time to read the previous message, but it also humanizes the bot.
+
+\subsection{Predicting failure and user behavior}
+
+Predicting failure and user behavior is hard in any user interface. But there are some common mistakes in chatbots that can be avoided before testing.
+
+There are several ways to handle unexpected user input.
+One of them is revisiting the previous state of the conversation, another one is restarting the conversation, or asking the user politely what he's trying to accomplish.
+
+Conversations that end up in this path should also be logged for research afterwards to avoid further dead ends.
+
+When using buttons in a bot, to for example visit a website, or start the conversation, they should be functional at all times.
+
+Facebook's messenger platform supports 2 main buttons for their chatbot. General buttons, and quick replies. Regular buttons will always be clickable multiple times. Quick replies are bound to the message they are meant to follow up on, and disappear as soon as they are clicked.
+
+Of course this best practice goes hand in hand with actual user testing and applies to every user interface, not just chatbots.
+
+\section{Case study}
+
+To compare the frameworks, a simple chatbot will be designed and created employing the techniques above.
+
+The chatbot will be a food ordering chatbot that offers the user a menu and takes in orders, similar to Domino's bot.
+
+\section{Conversational state diagram}
+
+To shape the bot, a conversational diagram needs to be created first. This diagram explains the main flow of the conversation, and the steps to reach the eventual purpose of the bot. In this case ordering food.
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=\textwidth]{conversationalflow}\label{fig:conversationalflow}
+	\caption{Conversational flow diagram for the food ordering bot~}
+\end{figure}
