@@ -6,6 +6,10 @@ export default function (server) {
     appPassword: process.env.MicrosoftAppPassword,
   });
 
+  // Bot Storage: Here we register the state storage for your bot.
+  // Default store: volatile in-memory store - Only for prototyping!
+  const inMemoryStorage = new builder.MemoryBotStorage();
+
   /**
    * Sets up a universal bot and a default message
    */
@@ -14,7 +18,10 @@ export default function (server) {
       "Sorry, I didn't get that 🤔. Type 'help' if you need assistance or try a different sentence.",
       session.message.text,
     );
-  });
+  }).set('storage', inMemoryStorage);
+
+  // Enable Conversation Data persistence
+  bot.set('persistConversationData', true);
 
   // Listen for messages from users
   server.post('/api/messages', connector.listen());
