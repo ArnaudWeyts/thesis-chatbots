@@ -26,12 +26,6 @@ export default function (server) {
   // Listen for messages from users
   server.post('/api/messages', connector.listen());
 
-  // =========================================================
-  // Bots Dialogs with LUIS Connection
-  // =========================================================
-  /* const recognizer = new builder.LuisRecognizer(process.env.LUIS_APP_URL);
-  bot.recognizer(recognizer); */
-
   // Send welcome when conversation with bot is started, by initiating the root dialog
   bot.on('conversationUpdate', (message) => {
     if (message.membersAdded) {
