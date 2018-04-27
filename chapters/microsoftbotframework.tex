@@ -24,7 +24,7 @@ One solution would be to use Node.JS in a code editor of choice. Preferably Visu
 
 Setting up a developer environment can be configured from scratch to be as complicated and complex as needed by the company or developer. Node.JS is an open-source, cross-platform JavaScript environment that can be run on a server. And in the end that's what a chatbot is, a sever API that responds to requests (messages or events from the user).
 
-It's important to note that JavaScript or also called ECMAScript is a language that is advancing very quickly and Node.JS cannot keep up with all the newest yearly features. And all of the documentation involving the Bot Framework is written in ES5. However it's still possible to use all of the newest features of ECMAScript if you compile your code down the ES5.
+It's important to note that JavaScript or also called \Gls{ECMAScript} is a language that is advancing very quickly and Node.JS cannot keep up with all the newest yearly features. And all of the documentation involving the Bot Framework is written in \Gls{ES5}. However it's still possible to use all of the newest features of ECMAScript if you compile your code down the ES5.
 
 The documentation on setting up an environment like this is very limited. Microsoft does not provide any instructions or boilerplates on how to set up an efficient environment. This allows for more freedom but increases the learning curve for a developer who wants to start coding a bot using newer ECMAScript features or the option to hot reload his code.
 
@@ -32,7 +32,7 @@ The documentation on setting up an environment like this is very limited. Micros
 
 Structuring the project is straight forward. Just like most production JavaScript projects there is a source folder containing all of the actual source code. Developers can decide to divide the test files into a separate folder but generally it's recommended to keep the test files close to the source file they reference.
 
-The node\_modules folder is a dependency folder, this contains any dependencies needed to build the project. There are two types of dependencies: Firstly there are developer-dependencies, these are dependencies needed to build the project and participate in development. An example is eslint, these are a set of specific language rules configured for the project to follow. There are also regular dependencies, these are external libraries the project might use to do calculations, or wrappers for certain technologies. The Microsoft Bot Framework works using their botbuilder SDK as a dependency.
+The node\_modules folder is a dependency folder, this contains any dependencies needed to build the project. There are two types of dependencies: Firstly there are developer-dependencies, these are dependencies needed to build the project and participate in development. An example is eslint, these are a set of specific language rules configured for the project to follow. There are also regular dependencies, these are external libraries the project might use to do calculations, or wrappers for certain technologies. The Microsoft Bot Framework works using their botbuilder \Gls{SDK} as a dependency.
 
 Next up are the config files, these are the workhorses of the developer's environment. There are 2 separate configuration files for the developers to build and test the bot as for the production server to build a functional output file. Webpack is a very powerful, well documented build tool and allows for easy customization. It is commonly used for front-end development but after some tweaking it can be used for Node.JS development as well. The development config starts a server that hot-reloads any changes made to the source files. This way it's easy for the developer to seamlessly check his changes instead of manually recompiling and restarting the server. The production config is very straightforward and simply compiles a minified and optimized output file into the build folder.
 
@@ -52,7 +52,7 @@ Speech Recognition is also supported for speech enabled bots. Sending system act
 
 \begin{figure}[!hb]
 	\centering
-	\includegraphics[width=0.85\textwidth]{microsoft-bot-emulator}\label{fig:microsoft-azure-calculator-screen}
+	\includegraphics[width=0.85\textwidth]{microsoft-bot-emulator}\label{fig:microsoft-bot-emulator}
 	\caption{Microsoft's Bot Emulator~\cite{microsoft-bot-emulator}}
 \end{figure}
 
@@ -164,7 +164,7 @@ To help the bot wait for a reply Microsoft provides developers with so called `P
 
 When used inside of a waterfall dialog, the reply of the user will be passed to to next step using the `results' object. Another method called `next' can be used from the arguments to skip to the next step of the waterfall.
 
-\begin{lstlisting}[language=JavaScript,caption=2-step waterfall using a prompt,label=listing:botframework-mock-event]
+\begin{lstlisting}[language=JavaScript,caption=2-step waterfall using a prompt,label=listing:waterfall-and-prompt]
 bot.dialog('orderButtonClick', [
 	(session) => {
 		builder.Prompts.choice(session, 'Thirsty? Want to order any drinks?', 'Yes|No drinks', {
