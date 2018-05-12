@@ -1,10 +1,10 @@
 \chapter{Microsoft Bot Framework}
 
-The BotBuilder SDK is an open-source solution developed by Microsoft to write a chatbot in once and make it possible to connect that same chatbot to multiple channels. Examples are Skype, Slack, Facebook Messenger, etc.
+The BotBuilder SDK is an open-source solution developed by Microsoft to write a chatbot once and make it possible to connect that same chatbot to multiple channels without rewriting the code. Examples are Skype, Slack, Facebook Messenger, etc.
 
 \section{Business Model}
 
-The Microsoft Bot Framework can be used in several ways. The base platform can be self-hosted on a server of choice. But to access the extra services, like spell checking, or recognizing user intents using Microsoft's LUIS (Language Understanding), an Azure subscription plan is required.
+The Microsoft Bot Framework can be used in several ways. The base platform can be hosted on a server of choice. But to access the extra services, like spell checking, or recognizing user intents using Microsoft's LUIS (Language Understanding), an Azure subscription plan is required.
 
 Azure is Microsoft's Cloud service that can be tailored to the customer's need. The customer can decide what modules or extra features he wants to add and calculate the price.
 
@@ -16,27 +16,29 @@ Azure is Microsoft's Cloud service that can be tailored to the customer's need. 
 
 \section{Technical implementation}
 
-Microsoft provides the bot framework for 2 languages: Node.JS and C\#. If C\# is used however, development can only be done inside of a Windows environment, or the limited online code editor.
+Microsoft provides the bot framework for 2 languages: Node.JS\cite{node-js} and C\#. If C\# is used however, development can only be done inside of a Windows environment, or the limited online code editor.
 
-One solution would be to use Node.JS in a code editor of choice. Preferably Visual Studio Code, Microsoft's cross-platform code editor. This way everything can be tailored and configured to the developer's needs.
+One solution would be to use Node.JS in a code editor of choice. Preferably Visual Studio Code\cite{visual-studio-code}, Microsoft's cross-platform code editor. This way everything can be tailored and configured to the developer's needs.
 
 \subsection{Developer environment}
 
-Setting up a developer environment can be configured from scratch to be as complicated and complex as needed by the company or developer. Node.JS is an open-source, cross-platform JavaScript environment that can be run on a server. And in the end that's what a chatbot is, a sever API that responds to requests (messages or events from the user).
+Setting up a developer environment can be configured from scratch to be as complicated and complex as needed by the company or developer. Node.JS is an open-source, cross-platform JavaScript environment that can be run on a server. And in the end that's what a chatbot is, a server API that responds to requests (messages or events from the user).
 
-It's important to note that JavaScript or also called \Gls{ECMAScript} is a language that is advancing very quickly and Node.JS cannot keep up with all the newest yearly features. And all of the documentation involving the Bot Framework is written in \Gls{ES5}. However it's still possible to use all of the newest features of ECMAScript if you compile your code down the ES5.
+It's important to note that JavaScript or also called \Gls{ECMAScript} is a language that is advancing very quickly and is rolling out yearly iterations. Currently the most recent iteration is called ES8. Node.JS is playing catch-up with these iterations and trying to support all of the additions.
 
-The documentation on setting up an environment like this is very limited. Microsoft does not provide any instructions or boilerplates on how to set up an efficient environment. This allows for more freedom but increases the learning curve for a developer who wants to start coding a bot using newer ECMAScript features or the option to hot reload his code.
+The documentation involving the Bot Framework is written in \Gls{ES5}. But it's still possible to write everything in the most recent version of ECMAScript if you compile your code down. This process will turn your unsupported code into code that is supported by Node.JS, depending on the configuration.
+
+Finding documentation on setting up an environment like this is not as easy as one would think. Microsoft does not provide any instructions or boilerplates on how to set up an efficient environment. This gives the developer more freedom but increases the learning curve for a someone who wants to start coding a bot using newer ECMAScript features or the option to hot-reload his code.
 
 \subsubsection{Project structure}
 
-Structuring the project is straight forward. Just like most production JavaScript projects there is a source folder containing all of the actual source code. Developers can decide to divide the test files into a separate folder but generally it's recommended to keep the test files close to the source file they reference.
+Structuring the project is straight forward. Just like most production JavaScript projects there is a source folder containing all of the actual source code. Developers can decide to divide the test files into a separate folder but generally it's recommended to keep the test files close to the source file they refer to.
 
-The node\_modules folder is a dependency folder, this contains any dependencies needed to build the project. There are two types of dependencies: Firstly there are developer-dependencies, these are dependencies needed to build the project and participate in development. An example is eslint, these are a set of specific language rules configured for the project to follow. There are also regular dependencies, these are external libraries the project might use to do calculations, or wrappers for certain technologies. The Microsoft Bot Framework works using their botbuilder \Gls{SDK} as a dependency.
+The node\_modules folder is a dependency folder, it contains any dependencies the project uses. There are two types of dependencies: First there are developer-dependencies, these are dependencies needed to build the project and participate in development. An example is ESLint\cite{eslint}, a configurable linter to make sure the source code follows specific language rules. There are also regular dependencies, these are external libraries the project might use to do calculations, or wrappers for certain technologies. The Microsoft Bot Framework functions using their botbuilder \Gls{SDK} as a dependency.
 
-Next up are the config files, these are the workhorses of the developer's environment. There are 2 separate configuration files for the developers to build and test the bot as for the production server to build a functional output file. Webpack is a very powerful, well documented build tool and allows for easy customization. It is commonly used for front-end development but after some tweaking it can be used for Node.JS development as well. The development config starts a server that hot-reloads any changes made to the source files. This way it's easy for the developer to seamlessly check his changes instead of manually recompiling and restarting the server. The production config is very straightforward and simply compiles a minified and optimized output file into the build folder.
+Next up are the configuration files, these are the workhorses of the developer's environment. They are used by Webpack\cite{webpack}. Webpack is a very powerful, well documented build tool and allows for easy customization. It is commonly used for front-end development but supports Node.JS development as well. The development config~\ref{appendix:botframeworkdevscript} starts a server that hot-reloads any changes made to the source files. This way it's easy for the developer to seamlessly check his changes instead of manually recompiling and restarting the server. The production config~\ref{appendix:botframeworkprodscript} compiles the code down to its most efficient format, which makes it unreadable to a developer, but very efficient for the production server to execute.
 
-Further more there is support for environment variables using the dotenv dependency. This file is not versioned to git and will contain any API keys used in the project.
+Further more there is support for environment variables using the dotenv\cite{dotenv} dependency. Variables can be securely stored in the env file, this file is not versioned to git and will contain any API keys used in the project.
 
 \begin{figure}[ht]
 	\centering
@@ -46,13 +48,15 @@ Further more there is support for environment variables using the dotenv depende
 
 \subsection{Testing}
 
-The bot can be tested locally or remotely on any platform using Microsoft's own Bot Emulator~\cite{microsoft-bot-emulator}, which is also open-source. This provides the developer with a live testing interface and information about everything the bot receives, including requests and the data that comes with them.
+The bot can be tested locally or remotely on any platform using Microsoft's own Bot Emulator~\ref{fig:microsoft-bot-emulator}, which is also open-source. This provides the developer with a live testing interface and detailed information about the bot it's connected to.
 
-Speech Recognition is also supported for speech enabled bots. Sending system activities is another useful feature because it allows the developer to emulate user events like for example a user joining the conversation. Lastly, payment processing is supported as well to emulate a transaction.
+Speech Recognition is supported for speech enabled bots. Sending system activities is another useful feature allowing the developer to emulate certain user actions like for example a user joining the conversation. Lastly, payment processing is supported to emulate a transaction.
+
+A new iteration of the emulator makes it possible to write transcripts of a conversation in a simple format and load them into the emulator.
 
 \begin{figure}[!hb]
 	\centering
-	\includegraphics[width=0.85\textwidth]{microsoft-bot-emulator}\label{fig:microsoft-bot-emulator}
+	\includegraphics[width=\textwidth]{microsoft-bot-emulator}\label{fig:microsoft-bot-emulator}
 	\caption{Microsoft's Bot Emulator~\cite{microsoft-bot-emulator}}
 \end{figure}
 
@@ -60,9 +64,9 @@ Speech Recognition is also supported for speech enabled bots. Sending system act
 
 \subsection{Initialization}
 
-Initializing the bot is straightforward, the official documentation recommends restify as the server. During initialization it's also possible to define a default message the bot will always use as a reply if no other reply options match.
+Initializing a bot is straightforward, the official documentation recommends restify\cite{restify} as the server. During initialization it's possible to define a default message the bot will always use as a reply if no other reply options match.
 
-\begin{lstlisting}[language=JavaScript,caption=Initialization of the chatbot,label=listing:botframework-init]
+\begin{lstlisting}[language=JavaScript,caption=Initialization of a chatbot,label=listing:botframework-init]
 import restify from 'restify';
 import * as builder from 'botbuilder';
 
@@ -91,7 +95,7 @@ const bot = new builder.UniversalBot(connector, (session) => {
 
 To make the bot start the conversation certain events can be used. In this case a `conversationUpdate' event will be used to trigger the root dialog.
 
-\begin{lstlisting}[language=JavaScript,caption=Initial message,label=listing:botframework-init-message]
+\begin{lstlisting}[language=JavaScript,caption=The root event of a bot,label=listing:botframework-init-message]
 bot.on('conversationUpdate', (message) => {
 	if (message.membersAdded) {
 		message.membersAdded.forEach((identity) => {
@@ -119,9 +123,10 @@ bot.on('conversationUpdate', (message) => {
 	\item messageReaction
 \end{itemize}
 
-The previous listing lists all of the available events during a conversation. A message event simply represents any communication between bot and user. The conversationUpdate event is triggered when any members are added/removed from the conversation, including the bot. Or when conversation metadata has changed. The contactRelationUpdate event indicates that the bot was added or removed to a user's contact list.
+During a regular conversation there are several different events that will be triggered. A message event simply represents any communication between bot and user. The conversationUpdate event is triggered when any members are added/removed from the conversation, including the bot. Or when conversation metadata has changed. The contactRelationUpdate event indicates that the bot was added to or removed from a user's contact list.
+These are the most common events, the other events are pretty self-explanatory.
 
-Most of these events can be triggered using the bot emulator or in code and sending it to the bot. This last one is useful for unit testing.
+Most of these events can be manually triggered using the bot emulator or defined in code, enabling unit testing.
 
 \begin{lstlisting}[language=JavaScript,caption=Sending a mock event to the bot,label=listing:botframework-mock-event]
 const event = {
@@ -143,15 +148,17 @@ One of the key concepts in the Bot Builder SKD are dialogs. Dialogs help the dev
 
 A dialog can be compared to a function. It can perform a specific task and be called at any point in time. Dialogs can also contain other dialogs to advance and branch off a conversation.
 
-A waterfall is an example of a dialog that guides the user through a set amount of steps or tasks. A great example of this is ordering food. First the user will be asked for drinks, followed up by the amount, again followed up by what starters the user wants and so on. There is a clear structure the bot goes through, hence the name Waterfall.
+\subsection{Waterfall}
+
+A waterfall is a type of dialog that guides the user through a set of steps or tasks. After each step, the bot will wait for the user to respond and pass the reply to the next step. A great example of this is ordering food. First the user will be asked for drinks, followed by the amount, again followed by the question for what starter the user wants, and so on. There is a clear structure the bot goes through, hence the name waterfall.
 
 A waterfall is defined by creating an array of consecutive functions or waterfall steps inside of a dialog.
 
-\subsection{Prompts}
+\subsubsection{Prompts}
 
 To help the bot wait for a reply Microsoft provides developers with so called `Prompts'. These already contain some extra functionality to validate the user's reply. A prompt should be used whenever the bot expects a reply from the user.
 
-\subsubsection{Prompt types}
+\subsubsection{Types}
 
 \begin{itemize}
 	\item text

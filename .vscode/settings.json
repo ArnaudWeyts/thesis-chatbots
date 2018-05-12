@@ -2,6 +2,7 @@
   "spellright.language": "en",
   "spellright.documentTypes": ["markdown", "latex", "plaintext"],
   "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
   "javascript.format.enable": false,
   "prettier.eslintIntegration": true
 }
