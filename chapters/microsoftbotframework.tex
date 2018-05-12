@@ -169,7 +169,7 @@ To help the bot wait for a reply Microsoft provides developers with so called `P
 	\item attachment
 \end{itemize}
 
-When used inside of a waterfall dialog, the reply of the user will be passed to to next step using the `results' object. Another method called `next' can be used from the arguments to skip to the next step of the waterfall.
+When used inside of a waterfall, the reply of the user will be passed to the next step using the `results' object. Another argument called `next' can be used as a method to skip to the next step of the waterfall.
 
 \begin{lstlisting}[language=JavaScript,caption=2-step waterfall using a prompt,label=listing:waterfall-and-prompt]
 bot.dialog('orderButtonClick', [
@@ -190,7 +190,7 @@ bot.dialog('orderButtonClick', [
 
 \subsection{User actions}
 
-There's multiple ways to handle user input other than prompts. Another way of doing this is using actions.
+There are multiple ways to handle user input other than the usage of prompts. One way of doing so is by using actions.
 
 \subsubsection{Triggeraction}
 
@@ -200,17 +200,11 @@ This behavior isn't always desired when the conversation needs to be temporarily
 
 \subsubsection{BeginActionDialog}
 
-A specific dialog can also be attached to a dialog using the `beginActionDialog' function. This can be useful to send the user to a contextual action. An example of this is when the user asks for specific help in a dialog context.
-
-\subsubsection{CustomAction}
-
-Unlike all the other actions, a customAction does not have any default action defined. It's up to the developer to define what it should do. The main benefit of using these is providing quick answers to a user without manipulating the dialog stack at all.
-
-Further more a customAction does not bind to a dialog, instead it binds to the bot itself.
+A specific dialog can also be attached to a dialog using the `beginActionDialog' action. This can be useful to send the user to a contextual action. An example of this is when the user asks for specific help in a dialog context.
 
 \subsubsection{ReloadAction}
 
-The reloadAction is pretty self-explanatory. Binding this to a dialog means it will restart the dialog whenever the action is invoked. It's also possible to pass arguments to this action for the dialog to receive.
+The reloadAction is somewhat self-explanatory. Binding this to a dialog means it will restart the dialog whenever the action is invoked. It's also possible to pass arguments to this action for the dialog to receive.
 
 \subsubsection{CancelAction}
 
@@ -220,6 +214,12 @@ This action cancels the dialog it is bound to when triggered. The parent dialog 
 
 Similar to the cancelAction action, the endConversation action will end the entire conversation when triggered. This clears the entire dialog stack and persisted state data.
 
+\subsubsection{CustomAction}
+
+Unlike all the other actions, a customAction does not have any default action defined. It's up to the developer to define what it should do. The main benefit of using these is providing quick answers to a user without manipulating the dialog stack at all.
+
+Further more a customAction does not bind to a dialog, instead it binds to the bot itself.
+
 \subsubsection{Important to note}
 
-Important to note is the fact that some of these actions are quite interruptive to the conversation's flow. To make sure the user really wants to clear the entire dialog stack and start over, a confirm prompt can also be added to these actions.
+Important to note is the fact that some of these actions are quite interruptive to the conversation's flow. To make sure the user really wants to clear the entire dialog stack and start over, a confirmation prompt can also be added to these actions.
