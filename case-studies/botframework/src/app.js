@@ -1,5 +1,7 @@
 import * as builder from 'botbuilder';
 
+import food from './food.json';
+
 export default function (server) {
   const connector = new builder.ChatConnector({
     appId: process.env.MicrosoftAppId,
@@ -53,179 +55,134 @@ export default function (server) {
     session.send(msg);
   });
 
+  /**
+   * Order waterfall model
+   */
   bot
     .dialog('orderButtonClick', [
       (session) => {
-        builder.Prompts.choice(session, 'Thirsty? Want to order any drinks? 🥤', 'Yes|No drinks', {
-          listStyle: builder.ListStyle.button,
-        });
+        // initialize order
+        session.conversationData.order = [];
+        builder.Prompts.confirm(session, 'Thirsty? Want to order any drinks? 🥤');
       },
-      (session, results, next) => {
-        if (results.response.entity === 'Yes') {
-          session.beginDialog('orderDrink');
+      (session, { response }, next) => {
+        if (response) {
+          session.beginDialog('order', { category: 'drinks' });
         } else {
           next();
         }
       },
       (session) => {
-        builder.Prompts.choice(session, 'Want to order any starters?', 'Yes|No starters', {
-          listStyle: builder.ListStyle.button,
-        });
+        builder.Prompts.confirm(session, 'Want to order any starters?');
       },
-      (session, results, next) => {
-        if (results.response.entity === 'Yes') {
-          session.beginDialog('orderStarters');
+      (session, { response }, next) => {
+        if (response) {
+          session.beginDialog('order', { category: 'starters' });
         } else {
           next();
         }
       },
       (session) => {
-        builder.Prompts.choice(session, 'Want to order any mains?', 'Yes|No mains', {
-          listStyle: builder.ListStyle.button,
-        });
+        builder.Prompts.confirm(session, 'Want to order any mains?');
       },
-      (session, results) => {
-        if (results.response.entity === 'Yes') {
-          session.beginDialog('orderMains');
+      (session, { response }, next) => {
+        if (response) {
+          session.beginDialog('order', { category: 'mains' });
         } else {
+          next();
+        }
+      },
+      (session) => {
+        if (session.conversationData.order.length === 0) {
           session.send("Strange, you don't seem very interested in ordering food 🤔, let's try this again.");
-          session.endDialog();
-          session.beginDialog('orderButtonClick');
+          session.replaceDialog('orderButtonClick');
+        } else {
+          let totalPrice = 0;
+
+          const items = session.conversationData.order.map((item) => {
+            const exactItem =
+              food.drinks.find(drink => drink.name === item.name) ||
+              food.starters.find(starter => starter.name === item.name) ||
+              food.mains.find(main => main.name === item.name);
+            totalPrice += parseFloat(exactItem.price.substring(1)) * item.quantity;
+            return builder.ReceiptItem.create(
+              session,
+              exactItem.price,
+              `${item.quantity}x ${item.name}`,
+            ).quantity(item.quantity);
+          });
+
+          const card = new builder.ReceiptCard(session)
+            .title('Receipt for your order')
+            .items(items)
+            .total(`$${totalPrice}`)
+            .buttons([
+              builder.CardAction.openUrl(
+                session,
+                'https://azure.microsoft.com/en-us/pricing/',
+                'More Information',
+              ),
+            ]);
+
+          const msg = new builder.Message(session);
+          msg.attachments([card]);
+          session.send(msg);
         }
       },
     ])
     .triggerAction({ matches: /^Order$/i });
 
-  bot.dialog('orderDrink', [
+  /**
+   * Ordering a specific category
+   */
+  bot.dialog('order', [
+    (session, args) => {
+      session.dialogData.category = args.category;
+      const cards = food[args.category].map(item =>
+        new builder.HeroCard(session)
+          .title(item.name)
+          .subtitle(item.price)
+          .buttons([builder.CardAction.imBack(session, item.name, 'Add to order')])
+          .images([builder.CardImage.create(session, item.image_url)]));
+
+      const msg = new builder.Message(session)
+        .attachmentLayout(builder.AttachmentLayout.carousel)
+        .attachments(cards);
+
+      builder.Prompts.choice(session, msg, food[args.category].map(item => item.name), {
+        retryPrompt: msg,
+      });
+    },
+    (session, results) => {
+      session.dialogData.item = results.response.entity;
+      builder.Prompts.number(
+        session,
+        `How many "${results.response.entity}" would you like to order?`,
+      );
+    },
+    (session, results, next) => {
+      if (results.response < 1 || !parseInt(results.response, 10)) {
+        session.send('Added 0 items to your order');
+      } else {
+        session.conversationData.order = [
+          ...session.conversationData.order,
+          { name: session.dialogData.item, quantity: results.response },
+        ];
+        session.send(`Succesfully added ${results.response} item${
+          results.response < 2 ? '' : 's'
+        } to your order 👌`);
+      }
+      next();
+    },
     (session) => {
-      const msg = new builder.Message(session);
-      msg.attachmentLayout(builder.AttachmentLayout.carousel);
-      msg.attachments([
-        new builder.HeroCard(session)
-          .title('Coca Cola')
-          .subtitle('$2,49')
-          .images([
-            builder.CardImage.create(
-              session,
-              'http://southeasternbeers.co.uk/291-thickbox_default/330ml-coke-icon.jpg',
-            ),
-          ])
-          .buttons([builder.CardAction.imBack(session, 'add Coca Cola to order', 'Add to order')]),
-        new builder.HeroCard(session)
-          .title('Fanta Orange')
-          .subtitle('$2,49')
-          .images([
-            builder.CardImage.create(
-              session,
-              'https://groceries.morrisons.com/productImages/113/113954011_0_640x640.jpg?identifier=102f7a3939b720f25c633aa3259b3b9c',
-            ),
-          ])
-          .buttons([
-            builder.CardAction.imBack(session, 'add Fanta Orange to order', 'Add to order'),
-          ]),
-      ]);
-      session.send(msg);
+      builder.Prompts.confirm(session, `Want to order any other ${session.dialogData.category}?`);
+    },
+    (session, { response }) => {
+      if (response) {
+        session.replaceDialog('order', { category: session.dialogData.category });
+      } else {
+        session.endDialog();
+      }
     },
   ]);
-
-  bot.dialog('orderStarters', [
-    (session) => {
-      const msg = new builder.Message(session);
-      msg.attachmentLayout(builder.AttachmentLayout.carousel);
-      msg.attachments([
-        new builder.HeroCard(session)
-          .title('3 Chicken Wings')
-          .subtitle('$6,49')
-          .images([
-            builder.CardImage.create(
-              session,
-              'https://chennaidines.files.wordpress.com/2013/06/dsc_0154.jpg',
-            ),
-          ])
-          .buttons([
-            builder.CardAction.imBack(session, 'add 3 Chicken Wings to order', 'Add to order'),
-          ]),
-        new builder.HeroCard(session)
-          .title('Halloumi Sticks & Dip')
-          .subtitle('$5,49')
-          .images([
-            builder.CardImage.create(
-              session,
-              'https://static.independent.co.uk/s3fs-public/styles/article_small/public/thumbnails/image/2018/02/26/13/halloumisticks.jpg',
-            ),
-          ])
-          .buttons([
-            builder.CardAction.imBack(
-              session,
-              'add Halloumi Sticks & Dip to order',
-              'Add to order',
-            ),
-          ]),
-      ]);
-      session.send(msg);
-    },
-  ]);
-
-  bot.dialog('orderMains', [
-    (session) => {
-      const msg = new builder.Message(session);
-      msg.attachmentLayout(builder.AttachmentLayout.carousel);
-      msg.attachments([
-        new builder.HeroCard(session)
-          .title('Sunset Burger')
-          .subtitle('$10,49')
-          .images([
-            builder.CardImage.create(
-              session,
-              'https://www.styledepartment.co.uk/wp-content/uploads/2017/02/SunsetBurger-Low-Res.-opener.jpg',
-            ),
-          ])
-          .buttons([
-            builder.CardAction.imBack(session, 'add Sunset burger to order', 'Add to order'),
-          ]),
-        new builder.HeroCard(session)
-          .title('Fino Pitta')
-          .subtitle('$9,99')
-          .images([
-            builder.CardImage.create(session, 'https://pbs.twimg.com/media/DMwDJW7WkAEhZPO.jpg'),
-          ])
-          .buttons([builder.CardAction.imBack(session, 'add Fino Pitta to order', 'Add to order')]),
-      ]);
-      session.send(msg);
-    },
-  ]);
-
-  bot
-    .dialog('addToOrderButtonClick', [
-      (session) => {
-        builder.Prompts.text(session, 'How many of these would you like to order?');
-      },
-      (session, results, next) => {
-        if (results.response < 1 || !parseInt(results.response, 10)) {
-          session.send('Added 0 items to your order');
-        } else {
-          // add amount to order //
-          session.send(`Succesfully added ${results.response} item${
-            results.response < 2 ? '' : 's'
-          } to your order 👌`);
-        }
-        next();
-      },
-      (session) => {
-        builder.Prompts.choice(session, 'Want to order anything else?', 'Drinks|Starters|Mains|No');
-      },
-      (session, results, next) => {
-        const choice = results.response.entity;
-        if (choice !== 'No') {
-          session.beginDialog(`order${choice}`);
-        } else {
-          next();
-        }
-      },
-      (session) => {
-        session.clearDialogStack();
-        session.send('Summary of order');
-      },
-    ])
-    .triggerAction({ matches: /add\s.*order/i });
 }

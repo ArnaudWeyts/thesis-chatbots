@@ -1,0 +1,41 @@
+{
+  "drinks": [
+    {
+      "name": "Coca Cola",
+      "price": "$2.49",
+      "image_url": "http://southeasternbeers.co.uk/291-thickbox_default/330ml-coke-icon.jpg"
+    },
+    {
+      "name": "Fanta Orange",
+      "price": "$2.49",
+      "image_url":
+        "https://groceries.morrisons.com/productImages/113/113954011_0_640x640.jpg?identifier=102f7a3939b720f25c633aa3259b3b9c"
+    }
+  ],
+  "starters": [
+    {
+      "name": "3 Chicken Wings",
+      "price": "$6.49",
+      "image_url": "https://chennaidines.files.wordpress.com/2013/06/dsc_0154.jpg"
+    },
+    {
+      "name": "Halloumi Sticks & Dip",
+      "price": "$5.49",
+      "image_url":
+        "https://static.independent.co.uk/s3fs-public/styles/article_small/public/thumbnails/image/2018/02/26/13/halloumisticks.jpg"
+    }
+  ],
+  "mains": [
+    {
+      "name": "Sunset Burger",
+      "price": "$10.49",
+      "image_url":
+        "https://www.styledepartment.co.uk/wp-content/uploads/2017/02/SunsetBurger-Low-Res.-opener.jpg"
+    },
+    {
+      "name": "Fino Pitta",
+      "price": "$9.99",
+      "image_url": "https://pbs.twimg.com/media/DMwDJW7WkAEhZPO.jpg"
+    }
+  ]
+}

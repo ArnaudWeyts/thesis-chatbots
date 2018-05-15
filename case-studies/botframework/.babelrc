@@ -1,8 +1,16 @@
 {
+  "env": {
+    "test": {
+      "presets": ["@ava/stage-4"]
+    }
+  },
   "presets": [
     [
-      "env",
+      "@babel/preset-env",
       {
+        "targets": {
+          "node": "8.10.0"
+        },
         "modules": false
       }
     ]

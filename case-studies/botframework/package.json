@@ -18,13 +18,14 @@
   "author": "Arnaud Weyts <arnaud.weyts@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": "8.10.0"
+    "node": ">=8.10.0 <=9"
   },
   "devDependencies": {
+    "@babel/core": "7.0.0-beta.46",
+    "@babel/preset-env": "7.0.0-beta.46",
+    "@babel/register": "7.0.0-beta.46",
     "ava": "next",
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.4",
-    "babel-preset-env": "^1.6.1",
+    "babel-loader": "8.0.0-beta.0",
     "dotenv-webpack": "^1.5.5",
     "eslint": "^4.18.2",
     "eslint-config-airbnb": "^16.1.0",
@@ -44,19 +45,20 @@
     },
     "extends": "airbnb",
     "rules": {
-      "linebreak-style": 0
+      "linebreak-style": 0,
+      "no-param-reassign": [
+        "error",
+        {
+          "props": true,
+          "ignorePropertyModificationsFor": ["session"]
+        }
+      ]
     }
   },
-  "eslintIgnore": [
-    "webpack.*.js"
-  ],
+  "eslintIgnore": ["webpack.*.js"],
   "ava": {
-    "files": [
-      "src/**/*.test.js"
-    ],
-    "sources": [
-      "src/**/*.{js,jsx}",
-      "!build/**/*"
-    ]
+    "files": ["src/**/*.test.js"],
+    "sources": ["src/**/*.{js,jsx}", "!build/**/*"],
+    "require": "@babel/register"
   }
 }
