@@ -50,7 +50,7 @@ Further more there is support for environment variables using the dotenv\cite{do
 
 The bot can be tested locally or remotely on any platform using Microsoft's own Bot Emulator~\ref{fig:microsoft-bot-emulator}, which is also open-source. This provides the developer with a live testing interface and detailed information about the bot it's connected to.
 
-Speech Recognition is supported for speech enabled bots. Sending system activities is another useful feature allowing the developer to emulate certain user actions like for example a user joining the conversation. Lastly, payment processing is supported to emulate a transaction.
+It's possible to connect to a locally running bot, or a remotely hosted bot. Speech Recognition is supported for speech enabled bots. Sending system activities is another useful feature allowing the developer to emulate certain user actions like for example a user joining the conversation. Lastly, payment processing is supported to emulate a transaction.
 
 A new iteration of the emulator makes it possible to write transcripts of a conversation in a simple format and load them into the emulator.
 
@@ -190,21 +190,40 @@ bot.dialog('orderButtonClick', [
 
 \subsection{User actions}
 
-There are multiple ways to handle user input other than the usage of prompts. One way of doing so is by using actions.
+There are multiple ways to handle user input other than the usage of prompts. One way of doing so is by using actions. Actions are bound to specific dialogs.
 
 \subsubsection{Triggeraction}
 
 The most common action is a `triggerAction'. This can be connected to a dialog to invoke it whenever the user inputs a matched term. Whenever this is triggered, the dialog stack is cleared and the invoked dialog will be the new first dialog on the stack.
 
-This behavior isn't always desired when the conversation needs to be temporarily redirected and resumed later on. That's where the `onSelectAction' option comes in, to add the matched dialog to the existing stack.
+This behavior isn't always desired when the conversation needs to be temporarily redirected and resumed later on. That's where the `onSelectAction' option comes in. This allows the developer to program different behavior to the action.
 
-\subsubsection{BeginActionDialog}
+\begin{lstlisting}[language=JavaScript,caption=triggerAction being bound to a dialog and its behavior overwritten by onSelectAction,label=listing:triggerAction]
+bot.dialog('help', function (session, args, next) {
+	//Send a help message
+	session.endDialog("Global help menu.");
+})
+// Once triggered, will start a new dialog as specified by
+// the 'onSelectAction' option.
+.triggerAction({
+	matches: /^help$/i,
+	onSelectAction: (session, args, next) => {
+			// Add the help dialog to the top of the dialog stack 
+			// (override the default behavior of replacing the stack)
+			session.beginDialog(args.action, args);
+	}
+});
+\end{lstlisting}
 
-A specific dialog can also be attached to a dialog using the `beginActionDialog' action. This can be useful to send the user to a contextual action. An example of this is when the user asks for specific help in a dialog context.
+\subsubsection{BeginDialogAction}
+
+A specific dialog can also be attached to a dialog using the `beginDialogAction' action. This can be useful to send the user to a contextual action. An example of this is when the user asks for specific help in a dialog context. When triggered, it will run the specified dialog and when that dialog finishes, resume at the step of the dialog it was bound to.
+
+This is similar to calling the `session.beginDialog('dialogid')' method from inside any dialog.
 
 \subsubsection{ReloadAction}
 
-The reloadAction is somewhat self-explanatory. Binding this to a dialog means it will restart the dialog whenever the action is invoked. It's also possible to pass arguments to this action for the dialog to receive.
+The reloadAction is somewhat self-explanatory. Binding this to a dialog means it will restart the dialog whenever the action is invoked.
 
 \subsubsection{CancelAction}
 
@@ -223,3 +242,144 @@ Further more a customAction does not bind to a dialog, instead it binds to the b
 \subsubsection{Important to note}
 
 Important to note is the fact that some of these actions are quite interruptive to the conversation's flow. To make sure the user really wants to clear the entire dialog stack and start over, a confirmation prompt can also be added to these actions.
+
+\subsection{Messages}
+
+There are many different kinds of messages the bot can send to the user. This ranges from the default text message to a fully constructed card with images or a video. However not all channels support fully constructed cards or other rich attachments.
+
+\subsubsection{Channel Inspector}
+
+The channel inspector~\cite{channel-inspector} is a tool developed by Microsoft to see what all of the message types look like on different platforms. A Skype card will different to a Messenger card for example. It also provides users with notes and limitations on a specific message type for a platform.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{channel-inspector}\label{fig:channel-inspector}
+	\caption{Channel Inspector}
+\end{figure}
+
+\subsubsection{Default message handler}
+
+\begin{lstlisting}[language=JavaScript,caption=Sending a simple text message or reading the message from the user is very easy,label=listing:send-text-message]
+session.send("Good morning.");
+
+const userMessage = session.message.text;
+\end{lstlisting}
+
+To construct more complicated messages, a `Message' object will have to be created. After initialization, different methods can be called on the object to set properties, like attachments, input hints or even the format of the message.
+
+\subsubsection{Attachments}
+
+There are two main types of attachments that can be added to a message. There are media and files, this involves files like images audio or videos. A second type is a card. As seen in the example of the figure of the Channel Inspector~\ref{fig:channel-inspector}.
+
+\begin{lstlisting}[language=JavaScript,caption=Receiving an attachment from the user and sending an image,label=listing:receive-attachment]
+// Getting an attachment
+const msg = session.message;
+const attachment = msg.attachments[0];
+
+
+// Sending a simple attachment
+const attachment = {
+	contentType: 'image/jpg',
+	contentUrl: 'https://78.media.tumblr.com/tumblr_m1wmyyTckD1qejbiro1_500.jpg',
+	name: 'This is definitely not a cat image',
+});
+
+session.send({
+	text: 'Here is a cat image!',
+	attachments,
+});
+\end{lstlisting}
+
+\subsubsection{Cards}
+
+Many different types of cards are available. Multiple cards can be added to a single message and displayed using a carousel, as seen in listing~\ref{listing:send-hero-card}.
+
+\renewcommand{\arraystretch}{2}
+\begin{table}[h]
+	\centering
+	\begin{tabular}{p{0.2\textwidth} |p{0.8\textwidth}}
+		Hero Card      & The most common one, usually contains one big image, text and one or more buttons.             \\
+		Thumbnail Card & Contains a single thumbnail, text and one or more buttons.                                     \\
+		Animation Card & A card for gifs or short videos.                                                               \\
+		Audio Card     & A card for an audio file.                                                                      \\
+		Video Card     & A card for a video file.                                                                       \\
+		Receipt Card   & A card that mimics a real receipt, allowing to input an item and cost, taxes, total cost, etc. \\
+		Signin Card    & To request a user to sign in from a 3rd party                                                  \\
+		Adaptive Card  & A fully customizable card that can contain images, text, input fields, buttons, etc.           \\
+	\end{tabular}
+	\caption{The different types of cards}
+	\label{tab:card-types}
+\end{table}
+
+\begin{lstlisting}[language=JavaScript,caption={Example of how to construct some HeroCards and display them in a carousel},label={listing:send-hero-card}]
+const cards = [
+	new builder.HeroCard(session)
+		.title(Item 1)
+		.subtitle($5)
+		.buttons([builder.CardAction.imBack(session, 'Item 1', 'Add to order')])
+		.images([builder.CardImage.create(session, 'https://item-1.jpg')])),
+	new builder.HeroCard(session)
+		.title(Item 2)
+		.subtitle($7)
+		.buttons([builder.CardAction.imBack(session, 'Item 2', 'Add to order')])
+		.images([builder.CardImage.create(session, 'https://item-2.jpg')])),
+]
+
+const msg = new builder.Message(session)
+	.attachmentLayout(builder.AttachmentLayout.carousel)
+	.attachments(cards);
+\end{lstlisting}
+
+The chatbot created for this case study makes use of the HeroCard to represent products. Each product has a title, price, image and button `Add to order'.
+
+\newpage
+
+\subsection{Storage}
+
+Managing state data can be approached in several ways. State data could represent a user and its preferences over time, or it could be data that is only temporarily stored during the conversation, like the current order for a user.
+
+Microsoft recommends the usage of the Bot Builder Framework's own in-memory data storage for testing and prototype bots. But for production bots they recommend the developers to implement their own storage solution, or use on of the Azure extensions to store data in \Gls{TableStorage}\cite{table-storage}, \Gls{CosmosDB}\cite{cosmosdb}, or SQL.
+
+If one of the Azure integrations is implemented, the methods used to set and persist data are the same as the In-memory data storage.
+
+\subsubsection{In-memory data storage, CosmosDB or Table Storage}
+
+Important to note is the fact that this storage is cleared every time the bot is restarted, that is why it's only recommended for testing purposes.
+
+\begin{lstlisting}[language=JavaScript,caption={Example on how to set up the in-memory data storage},label={listing:in-memory-storage}]
+const inMemoryStorage = new builder.MemoryBotStorage();
+
+const bot = new builder.UniversalBot(connector, [..waterfall steps..]).set('storage', inMemoryStorage);
+\end{lstlisting}
+
+As seen in listing~\ref{listing:in-memory-storage}, the storage is set when creating the bot instance. The setup when using one of the Azure extensions is very similar, the developer simply imports a package and sets some API keys before adding the storage to the bot.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{p{0.30\textwidth} | p{0.15\textwidth} | p{0.55\textwidth}}
+	Container & Scope & Description\\
+	\hline
+	userData & User & Data bound to user, persists across different conversations.\\
+	privateConversationData & Conversation & Data bound to user, does not persist across conversations.\\
+	conversationData & Conversation & Data bound to a conversation, but shared across all users inside of the conversation.\\
+	dialogData & Dialog & Data bound to a single dialog, when the dialog ends the data is cleared.
+	\end{tabular}
+	\caption{Storage containers}
+	\label{tab:storage-containers}
+\end{table}
+
+As seen in table~\ref{tab:storage-containers} there are several different containers which can be used to store data. The `userData' container can be used to store user preferences and persist them across conversations. The `conversationData' and `privateConversationData' containers could be used to store the user's current order, as that is only relevant to the current conversation. The `dialogData' container is useful for data relevant to the dialog.
+
+Setting or getting this data is as easy as it gets. Once set up, the containers can be accessed anywhere using the `session' object as seen in listing~\ref{listing:storage-containers}.
+
+\begin{lstlisting}[language=JavaScript,caption={Example on how to use the storage containers},label={listing:storage-containers}]
+// set data
+session.userData.preferences = ['spicy']; 
+
+// get data
+const preference1 = session.userData.preferences[0];
+
+// delete data
+session.userData = {};
+\end{lstlisting}
+	
