@@ -60,7 +60,7 @@ A new iteration of the emulator makes it possible to write transcripts of a conv
 	\caption{Microsoft's Bot Emulator~\cite{microsoft-bot-emulator}}
 \end{figure}
 
-\section{Building the bot}
+\section{Building a bot}
 
 \subsection{Initialization}
 
@@ -357,12 +357,12 @@ As seen in listing~\ref{listing:in-memory-storage}, the storage is set when crea
 \begin{table}[h]
 	\centering
 	\begin{tabular}{p{0.30\textwidth} | p{0.15\textwidth} | p{0.55\textwidth}}
-	Container & Scope & Description\\
-	\hline
-	userData & User & Data bound to user, persists across different conversations.\\
-	privateConversationData & Conversation & Data bound to user, does not persist across conversations.\\
-	conversationData & Conversation & Data bound to a conversation, but shared across all users inside of the conversation.\\
-	dialogData & Dialog & Data bound to a single dialog, when the dialog ends the data is cleared.
+		Container               & Scope        & Description                                                                           \\
+		\hline
+		userData                & User         & Data bound to user, persists across different conversations.                          \\
+		privateConversationData & Conversation & Data bound to user, does not persist across conversations.                            \\
+		conversationData        & Conversation & Data bound to a conversation, but shared across all users inside of the conversation. \\
+		dialogData              & Dialog       & Data bound to a single dialog, when the dialog ends the data is cleared.
 	\end{tabular}
 	\caption{Storage containers}
 	\label{tab:storage-containers}
@@ -382,4 +382,3 @@ const preference1 = session.userData.preferences[0];
 // delete data
 session.userData = {};
 \end{lstlisting}
-	
