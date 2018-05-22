@@ -18,7 +18,7 @@ It's also possible to take full advantage of Dialogflow using their client libra
 
 There are several ways to choose a development environment and set up a workflow. Using Google Dialogflow isn't just focused on coding, developers mostly need to work with the user interface provided by google.
 
-To get started, simply making use of the website GUI will suffice. There is also an inline editor~\ref{fig:dialogflow-inline-editor} provided to handle requests in code. Another way to handle requests is by enabling a custom webhook to receive information from Dialogflow, like an intent that was recognized, and handle it. This webhook would be written by the developer, following Dialogflow's specification to send back messages. Setting up this webhook is completely up to the developer, it can be done in any server language and does not make use of any library linked to Dialogflow, all the webhook will receive is a simple POST request.
+To get started, simply making use of the website GUI will suffice. There is also an inline editor (\ref{fig:dialogflow-inline-editor}) provided to handle requests in code. Another way to handle requests is by enabling a custom webhook to receive information from Dialogflow, like an intent that was recognized, and handle it. This webhook would be written by the developer, following Dialogflow's specification to send back messages. Setting up this webhook is completely up to the developer, it can be done in any server language and does not make use of any library linked to Dialogflow, all the webhook will receive is a simple POST request.
 
 \begin{figure}[ht]
 	\centering
@@ -82,6 +82,16 @@ Two types of training phrases can be defined, examples or templates. Examples ar
 
 This section contains a single action and its parameters. An action is a simple trigger word for the agent to handle the intent using its recognized parameters. The parameter table is connected to the training phrases. If some words were automatically annotated and recognized as a parameter from inside the training phrases section, they will have been added to the table. There can be cases where parameters would have to be added manually, which can be done using this section.
 
+In this section, it's also possible to set certain parameters as required. This means that they should always get recognized inside of the sentence. When a parameter is missing, prompts can be called to ask the user for that specific information. An example is when a user asks to order a hamburger but doesn't specify a date. If the date parameter is set as required with a defined prompt (figure~\ref{fig:dialogflow-prompts}), the agent will ask the user when he wants his hamburger to be delivered.
+
+\newpage
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.9\textwidth]{dialogflow-prompts}\label{fig:dialogflow-prompts}
+	\caption{Setting custom prompts to ask for a missing parameter}
+\end{figure}
+
 \subsubsection{Responses}
 
 This is the section where the bot responses will be defined. Multiple responses can be defined for an intent to allow for variation. Different response types can be added for specific platforms.
@@ -134,6 +144,29 @@ This entity can then be used straight away in any intent by inputting training p
 
 \subsection{Events}
 
-\subsection{Dialogs}
+Triggering intents using events is supported as well. These events can be custom events defined by the developer, or default events defined by platforms, as seen in figure~\ref{fig:dialogflow-intent-events}. An example is the `WELCOME' event, which will be triggered when a user starts the conversation.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.9\textwidth]{dialogflow-intent-events}\label{fig:dialogflow-intent-events}
+	\caption{Selecting one of the default events to trigger an intent}
+\end{figure}
+
+The only way to call a custom event is by using the webhook functionality. Inside the matched webhook for an intent, a response needs to be sent to the Dialogflow platform.
+
+\begin{lstlisting}[language=JavaScript,caption=The response that needs to be sent to the Dialogflow API to trigger a custom event,label=listing:webhook-send-event]
+{
+	"followupEvent": {
+			"name": "myCustomEvent",
+			"data": {
+				"ExampleParameter":"Test"
+			}
+	}
+}
+\end{lstlisting}
 
 \subsection{Fulfillment}
+
+Fulfillment is the final section to construct a full conversational flow. In this section the developer can define a fully custom webhook URL that will receive POST requests from Dialogflow following their API specification. Inside the webhook the developers can handle all of their custom needs which aren't supported by the platform and send a request back to the platform to send a message.
+
+Another option is using the inline editor (\ref{fig:dialogflow-inline-editor}) to set up some basic custom requests without having to deploy a full webhook outside of the platform.
