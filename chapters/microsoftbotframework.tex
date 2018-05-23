@@ -10,8 +10,9 @@ Azure is Microsoft's Cloud service that can be tailored to the customer's need. 
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{microsoft-azure-calculator-screen}\label{fig:microsoft-azure-calculator-screen}
+	\includegraphics[width=\textwidth]{microsoft-azure-calculator-screen}
 	\caption{Microsoft's Azure Pricing Calculator~\cite{azure-pricing-calculator}}
+	\label{fig:microsoft-azure-calculator-screen}
 \end{figure}
 
 \section{Technical implementation}
@@ -42,29 +43,33 @@ Further more there is support for environment variables using the dotenv\cite{do
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.33\textwidth]{projectstructure}\label{fig:projectstructure}
+	\includegraphics[width=0.33\textwidth]{projectstructure}
 	\caption{Project structure}
+	\label{fig:projectstructure}
 \end{figure}
 
 \subsection{Testing}
 
-The bot can be tested locally or remotely on any platform using Microsoft's own Bot Emulator~\ref{fig:microsoft-bot-emulator}, which is also open-source. This provides the developer with a live testing interface and detailed information about the bot it's connected to.
+The bot can be tested locally or remotely on any platform using Microsoft's own Bot Emulator (\ref{fig:microsoft-bot-emulator}), which is also open-source. This provides the developer with a live testing interface and detailed information about the bot it's connected to.
 
 It's possible to connect to a locally running bot, or a remotely hosted bot. Speech Recognition is supported for speech enabled bots. Sending system activities is another useful feature allowing the developer to emulate certain user actions like for example a user joining the conversation. Lastly, payment processing is supported to emulate a transaction.
 
 A new iteration of the emulator makes it possible to write transcripts of a conversation in a simple format and load them into the emulator.
 
-\begin{figure}[!hb]
+\begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{microsoft-bot-emulator}\label{fig:microsoft-bot-emulator}
+	\includegraphics[width=\textwidth]{microsoft-bot-emulator}
 	\caption{Microsoft's Bot Emulator~\cite{microsoft-bot-emulator}}
+	\label{fig:microsoft-bot-emulator}
 \end{figure}
 
 \section{Building a bot}
 
 \subsection{Initialization}
 
-Initializing a bot is straightforward, the official documentation recommends restify\cite{restify} as the server. During initialization it's possible to define a default message the bot will always use as a reply if no other reply options match.
+Initializing a bot is straightforward, the official documentation recommends Restify\cite{restify} as the server. During initialization it's possible to define a default message the bot will always use as a reply if no other reply options match.
+
+\newpage
 
 \begin{lstlisting}[language=JavaScript,caption=Initialization of a chatbot,label=listing:botframework-init]
 import restify from 'restify';
@@ -93,6 +98,8 @@ const bot = new builder.UniversalBot(connector, (session) => {
 }).set('storage', inMemoryStorage);
 \end{lstlisting}
 
+\newpage
+
 To make the bot start the conversation certain events can be used. In this case a `conversationUpdate' event will be used to trigger the root dialog.
 
 \begin{lstlisting}[language=JavaScript,caption=The root event of a bot,label=listing:botframework-init-message]
@@ -107,21 +114,23 @@ bot.on('conversationUpdate', (message) => {
 });
 \end{lstlisting}
 
-\newpage
-
 \subsection{Event types}
-\begin{itemize}
-	\item message
-	\item conversationUpdate
-	\item contactRelationUpdate
-	\item typing
-	\item ping
-	\item deleteUserData
-	\item endOfConversation
-	\item event
-	\item invoke
-	\item messageReaction
-\end{itemize}
+
+\renewcommand{\arraystretch}{1}
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|l|}
+		\hline
+		message & deleteUserData \\
+		conversationUpdate & endOfConversation \\
+		contactRelationUpdate & event \\
+		typing & invoke \\
+		ping & messageReaction \\
+		\hline
+	\end{tabular}
+	\caption{Different events that can be triggered in a conversation}
+	\label{tab:events}
+\end{table}
 
 During a regular conversation there are several different events that will be triggered. A message event simply represents any communication between bot and user. The conversationUpdate event is triggered when any members are added/removed from the conversation, including the bot. Or when conversation metadata has changed. The contactRelationUpdate event indicates that the bot was added to or removed from a user's contact list.
 These are the most common events, the other events are pretty self-explanatory.
@@ -160,14 +169,19 @@ To help the bot wait for a reply Microsoft provides developers with so called `P
 
 \subsubsection{Types}
 
-\begin{itemize}
-	\item text
-	\item confirm
-	\item number
-	\item time
-	\item choice
-	\item attachment
-\end{itemize}
+\renewcommand{\arraystretch}{1}
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|l|}
+		\hline
+		text & time \\
+		confirm & choice \\
+		number & attachment \\
+		\hline
+	\end{tabular}
+	\caption{Prompt types}
+	\label{tab:prompt-types}
+\end{table}
 
 When used inside of a waterfall, the reply of the user will be passed to the next step using the `results' object. Another argument called `next' can be used as a method to skip to the next step of the waterfall.
 
@@ -253,8 +267,9 @@ The channel inspector~\cite{channel-inspector} is a tool developed by Microsoft 
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{channel-inspector}\label{fig:channel-inspector}
-	\caption{Channel Inspector}
+	\includegraphics[width=\textwidth]{channel-inspector}
+	\caption{Channel Inspector~\cite{channel-inspector}}
+	\label{fig:channel-inspector}
 \end{figure}
 
 \subsubsection{Default message handler}
@@ -269,7 +284,7 @@ To construct more complicated messages, a `Message' object will have to be creat
 
 \subsubsection{Attachments}
 
-There are two main types of attachments that can be added to a message. There are media and files, this involves files like images audio or videos. A second type is a card. As seen in the example of the figure of the Channel Inspector~\ref{fig:channel-inspector}.
+There are two main types of attachments that can be added to a message. There are media and files, this involves files like images audio or videos. A second type is a card. As seen in the example in the figure of the Channel Inspector~\ref{fig:channel-inspector}.
 
 \begin{lstlisting}[language=JavaScript,caption=Receiving an attachment from the user and sending an image,label=listing:receive-attachment]
 // Getting an attachment
@@ -332,8 +347,6 @@ const msg = new builder.Message(session)
 
 The chatbot created for this case study makes use of the HeroCard to represent products. Each product has a title, price, image and button `Add to order'.
 
-\newpage
-
 \subsection{Storage}
 
 Managing state data can be approached in several ways. State data could represent a user and its preferences over time, or it could be data that is only temporarily stored during the conversation, like the current order for a user.
@@ -371,6 +384,8 @@ As seen in listing~\ref{listing:in-memory-storage}, the storage is set when crea
 As seen in table~\ref{tab:storage-containers} there are several different containers which can be used to store data. The `userData' container can be used to store user preferences and persist them across conversations. The `conversationData' and `privateConversationData' containers could be used to store the user's current order, as that is only relevant to the current conversation. The `dialogData' container is useful for data relevant to the dialog.
 
 Setting or getting this data is as easy as it gets. Once set up, the containers can be accessed anywhere using the `session' object as seen in listing~\ref{listing:storage-containers}.
+
+\newpage
 
 \begin{lstlisting}[language=JavaScript,caption={Example on how to use the storage containers},label={listing:storage-containers}]
 // set data

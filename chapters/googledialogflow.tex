@@ -22,8 +22,9 @@ To get started, simply making use of the website GUI will suffice. There is also
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{dialogflow-inline-editor-testing}\label{fig:dialogflow-inline-editor-testing}
+	\includegraphics[width=\textwidth]{dialogflow-inline-editor-testing}
 	\caption{Dialogflow's inline editor for handling intents and their testing section}
+	\label{fig:dialogflow-inline-editor-testing}
 \end{figure}
 
 
@@ -44,8 +45,9 @@ This can be done from scratch, or by using one of the prebuilt agents (figure~\r
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.9\textwidth]{dialogflow-prebuilt-agents}\label{fig:dialogflow-prebuilt-agents}
+	\includegraphics[width=0.9\textwidth]{dialogflow-prebuilt-agents}
 	\caption{Some of the prebuilt agents made available by the Dialogflow team}
+	\label{fig:dialogflow-prebuilt-agents}
 \end{figure}
 
 Agents are fully customizable and easy to import but the prebuilt agents do not contain any responses. There is also a small talk agent that can be added on top of a main agent to push specific branding and provide users with a more human experience.
@@ -70,8 +72,9 @@ Two types of training phrases can be defined, examples or templates. Examples ar
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.9\textwidth]{dialogflow-training-phrases}\label{fig:dialogflow-training-phrases}
+	\includegraphics[width=0.9\textwidth]{dialogflow-training-phrases}
 	\caption{An example training phrase with an annotated parameter}
+	\label{fig:dialogflow-training-phrases}
 \end{figure}
 
 \subsubsection{Action and parameters}
@@ -82,8 +85,9 @@ In this section, it's also possible to set certain parameters as required. This 
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.9\textwidth]{dialogflow-prompts}\label{fig:dialogflow-prompts}
+	\includegraphics[width=0.9\textwidth]{dialogflow-prompts}
 	\caption{Setting custom prompts to ask for a missing parameter}
+	\label{fig:dialogflow-prompts}
 \end{figure}
 
 \subsubsection{Responses}
@@ -100,8 +104,9 @@ Entities are a second important part of Dialogflow's toolset. They are used to d
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.9\textwidth]{intent-entity}\label{fig:intent-entity}
+	\includegraphics[width=0.9\textwidth]{intent-entity}
 	\caption{Representation of an intent and entity}
+	\label{fig:intent-entity}
 \end{figure}
 
 There are 3 types of entities in the Dialogflow platform: system, developer and user. These 3 types can each also be divided into a mapping, enum or composite.
@@ -124,31 +129,36 @@ Defining entities or using system entities is pretty straight forward (\ref{fig:
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.9\textwidth]{entity-creation}\label{fig:entity-creation}
+	\includegraphics[width=0.9\textwidth]{entity-creation}
 	\caption{Creating an enum entity}
+	\label{fig:entity-creation}
 \end{figure}
 
 This entity can then be used straight away in any intent by inputting training phrases. The entity will be recognized automatically and added to the parameter table as seen in figure~\ref{fig:parameter-table}.
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.9\textwidth]{parameter-table}\label{fig:parameter-table}
+	\includegraphics[width=0.9\textwidth]{parameter-table}
 	\caption{The parameter table of an intent}
+	\label{fig:parameter-table}
 \end{figure}
 
 \subsection{Events}
 
-Triggering intents using events is supported as well. These events can be custom events defined by the developer, or default events defined by platforms, as seen in figure~\ref{fig:dialogflow-intent-events}. An example is the `WELCOME' event, which will be triggered when a user starts the conversation.
+Triggering intents using events is supported as well. These events can be custom events defined by the developer, or default events defined by platforms, as seen in figure~\ref{fig:dialogflow-intent-events}. An example is the `FACEBOOK\_WELCOME' event, which will be triggered when a user starts the conversation.
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.9\textwidth]{dialogflow-intent-events}\label{fig:dialogflow-intent-events}
+	\includegraphics[width=0.9\textwidth]{dialogflow-intent-events}
 	\caption{Selecting one of the default events to trigger an intent}
+	\label{fig:dialogflow-intent-events}
 \end{figure}
 
-The only way to call a custom event is by using the webhook functionality. Inside the matched webhook for an intent, a response needs to be sent to the Dialogflow platform.
+\newpage
 
-\begin{lstlisting}[language=JavaScript,caption=The response that needs to be sent to the Dialogflow API to trigger a custom event,label=listing:webhook-send-event]
+The only way to call a custom event is by using the webhook functionality. Inside the matched webhook for an intent, a response needs to be sent to the Dialogflow platform (~\ref{listing:webhook-send-event}).
+
+\begin{lstlisting}[language=JavaScript,caption={The response that needs to be sent to the Dialogflow API to trigger a custom event},label=listing:webhook-send-event]
 {
 	"followupEvent": {
 			"name": "myCustomEvent",
