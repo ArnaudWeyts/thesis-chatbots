@@ -10,7 +10,7 @@ Google offers 2 main pricing options for their platform. Firstly there is the fr
 
 \section{Technical implementation}
 
-Because Dialogflow is very focused on their GUI, small to medium businesses that don't need extensive logic in their chatbot can make use of the existing tools to create a chatbot. This is recommended to get started and get familiar with the platform. When more complicated logic needs to be implemented like API calls and custom logic that wouldn't be supported by the platform, custom webhooks can be created. These allow developers to receive a message that was recognized by Dialogflow and implement their custom logic to handle the message.
+Because Dialogflow is very focused on their GUI, small to medium businesses that don't need extensive logic in their chatbot can make use of the existing tools to create a chatbot. This is recommended to get started and get familiar with the platform. When more complicated logic needs to be implemented like API calls and custom logic that wouldn't be supported by the platform, custom \Gls{webhook}s can be created. These allow developers to receive a message that was recognized by Dialogflow and implement their custom logic to handle the message.
 
 It's also possible to take full advantage of Dialogflow using their client libraries. These libraries are available for C\#, GO, Java, Node.JS, PHP, Python and Ruby. There is some documentation available to get started but diving deeper into the development would take great effort because there is only an overwhelming API reference specification available. To take advantage of this functionality, the enterprise edition of Dialogflow needs to be activated.
 
@@ -109,7 +109,7 @@ Entities are a second important part of Dialogflow's toolset. They are used to d
 	\label{fig:intent-entity}
 \end{figure}
 
-There are 3 types of entities in the Dialogflow platform: system, developer and user. These 3 types can each also be divided into a mapping, enum or composite.
+There are 3 types of entities in the Dialogflow platform: system, developer and user. These 3 types can each also be divided into a \Gls{mapping}, \Gls{enum} or \Gls{composite}.
 
 \subsubsection{System entities}
 
