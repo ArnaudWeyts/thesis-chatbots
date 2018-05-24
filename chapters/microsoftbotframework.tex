@@ -1,6 +1,6 @@
 \chapter{Microsoft Bot Framework}
 
-The BotBuilder SDK is an open-source solution developed by Microsoft to write a chatbot once and make it possible to connect that same chatbot to multiple channels without rewriting the code. Examples are Skype, Slack, Facebook Messenger, etc.
+The Bot Builder SDK is an open-source solution developed by Microsoft to write a chatbot once and make it possible to connect that same chatbot to multiple channels without rewriting the code. Examples of channels are Skype, Slack, Facebook Messenger, etc.
 
 \section{Business Model}
 
@@ -17,9 +17,9 @@ Azure is Microsoft's Cloud service that can be tailored to the customer's need. 
 
 \section{Technical implementation}
 
-Microsoft provides the bot framework for 2 languages: Node.JS\cite{node-js} and C\#. If C\# is used however, development can only be done inside of a Windows environment, or the limited online code editor.
+Microsoft's Bot Framework supports 2 languages: Node.JS~\cite{node-js} and C\#. If C\# is used however, development can only be done inside of a Windows environment, or the limited online code editor.
 
-One solution would be to use Node.JS in a code editor of choice. Preferably Visual Studio Code\cite{visual-studio-code}, Microsoft's cross-platform code editor. This way everything can be tailored and configured to the developer's needs.
+One solution would be to use Node.JS in a code editor of choice. Preferably Visual Studio Code~\cite{visual-studio-code}, Microsoft's cross-platform code editor. This way everything can be tailored and configured to the developer's needs.
 
 \subsection{Developer environment}
 
@@ -35,11 +35,11 @@ Finding documentation on setting up an environment like this is not as easy as o
 
 Structuring the project is straight forward. Just like most production JavaScript projects there is a source folder containing all of the actual source code. Developers can decide to divide the test files into a separate folder but generally it's recommended to keep the test files close to the source file they refer to.
 
-The node\_modules folder is a dependency folder, it contains any dependencies the project uses. There are two types of dependencies: First there are developer-dependencies, these are dependencies needed to build the project and participate in development. An example is ESLint\cite{eslint}, a configurable linter to make sure the source code follows specific language rules. There are also regular dependencies, these are external libraries the project might use to do calculations, or wrappers for certain technologies. The Microsoft Bot Framework functions using their botbuilder \Gls{SDK} as a dependency.
+The node\_modules folder is a dependency folder, it contains any dependencies the project uses. There are two types of dependencies: First there are developer-dependencies, these are dependencies needed to build the project and participate in development. An example is ESLint~\cite{eslint}, a configurable linter to make sure the source code follows specific language rules. There are also regular dependencies, these are external libraries the project might use to do calculations, or wrappers for certain technologies. The Microsoft Bot Framework functions using their Bot Builder \Gls{SDK} as a dependency.
 
-Next up are the configuration files, these are the workhorses of the developer's environment. They are used by Webpack\cite{webpack}. Webpack is a very powerful, well documented build tool and allows for easy customization. It is commonly used for front-end development but supports Node.JS development as well. The development config~\ref{appendix:botframeworkdevscript} starts a server that hot-reloads any changes made to the source files. This way it's easy for the developer to seamlessly check his changes instead of manually recompiling and restarting the server. The production config~\ref{appendix:botframeworkprodscript} compiles the code down to its most efficient format, which makes it unreadable to a developer, but very efficient for the production server to execute.
+Next up are the configuration files, these are the workhorses of the developer's environment. They are used by Webpack~\cite{webpack}. Webpack is a very powerful, well documented build tool and allows for easy customization. It is commonly used for front-end development but supports Node.JS development as well. The development config (Appendix~\ref{appendix:botframeworkdevscript}) starts a server that hot-reloads any changes made to the source files. This way it's easy for the developer to seamlessly check his changes instead of manually recompiling and restarting the server. The production config (Appendix~\ref{appendix:botframeworkprodscript}) compiles the code down to its most efficient format, which makes it unreadable to a developer, but very efficient for the production server to execute.
 
-Further more there is support for environment variables using the dotenv\cite{dotenv} dependency. Variables can be securely stored in the env file, this file is not versioned to git and will contain any API keys used in the project.
+Further more there is support for environment variables using the Dotenv~\cite{dotenv} dependency. Variables can be securely stored in the env file, this file is not versioned to git and will contain any API keys used in the project.
 
 \begin{figure}[ht]
 	\centering
@@ -67,11 +67,11 @@ A new iteration of the emulator makes it possible to write transcripts of a conv
 
 \subsection{Initialization}
 
-Initializing a bot is straightforward, the official documentation recommends Restify\cite{restify} as the server. During initialization it's possible to define a default message the bot will always use as a reply if no other reply options match.
+Initializing a bot is straightforward (listing~\ref{listing:botframework-init}), the official documentation recommends Restify~\cite{restify} as the server. During initialization it's possible to define a default message the bot will always use as a reply if no other reply options match.
 
 \newpage
 
-\begin{lstlisting}[language=JavaScript,caption=Initialization of a chatbot,label=listing:botframework-init]
+\begin{lstlisting}[language=JavaScript,caption={Initialization of a chatbot},label=listing:botframework-init]
 import restify from 'restify';
 import * as builder from 'botbuilder';
 
@@ -100,9 +100,9 @@ const bot = new builder.UniversalBot(connector, (session) => {
 
 \newpage
 
-To make the bot start the conversation certain events can be used. In this case a `conversationUpdate' event will be used to trigger the root dialog.
+To make the bot start the conversation certain events can be used. In this case a `conversationUpdate' event will be used to trigger the root dialog (\ref{listing:botframework-init-message}).
 
-\begin{lstlisting}[language=JavaScript,caption=The root event of a bot,label=listing:botframework-init-message]
+\begin{lstlisting}[language=JavaScript,caption={The root event of a bot},label=listing:botframework-init-message]
 bot.on('conversationUpdate', (message) => {
 	if (message.membersAdded) {
 		message.membersAdded.forEach((identity) => {
@@ -117,27 +117,27 @@ bot.on('conversationUpdate', (message) => {
 \subsection{Event types}
 
 \renewcommand{\arraystretch}{1}
-\begin{table}[h]
+\begin{table}[ht]
 	\centering
 	\begin{tabular}{|l|l|}
 		\hline
-		message & deleteUserData \\
-		conversationUpdate & endOfConversation \\
-		contactRelationUpdate & event \\
-		typing & invoke \\
-		ping & messageReaction \\
+		message               & deleteUserData    \\
+		conversationUpdate    & endOfConversation \\
+		contactRelationUpdate & event             \\
+		typing                & invoke            \\
+		ping                  & messageReaction   \\
 		\hline
 	\end{tabular}
 	\caption{Different events that can be triggered in a conversation}
 	\label{tab:events}
 \end{table}
 
-During a regular conversation there are several different events that will be triggered. A message event simply represents any communication between bot and user. The conversationUpdate event is triggered when any members are added/removed from the conversation, including the bot. Or when conversation metadata has changed. The contactRelationUpdate event indicates that the bot was added to or removed from a user's contact list.
-These are the most common events, the other events are pretty self-explanatory.
+During a regular conversation there are several different events that will be triggered (\ref{tab:events}). A message event simply represents any communication between bot and user. The conversationUpdate event is triggered when any members are added or removed from the conversation, including the bot. Or when conversation metadata has changed. The contactRelationUpdate event indicates that the bot was added to or removed from a user's contact list.
+These are the most common events, other events are self-explanatory or rarely used in a simple chatbot.
 
-Most of these events can be manually triggered using the bot emulator or defined in code, enabling unit testing.
+Most of these events can be manually triggered using the bot emulator or defined in code (\ref{listing:botframework-mock-event}), enabling unit testing.
 
-\begin{lstlisting}[language=JavaScript,caption=Sending a mock event to the bot,label=listing:botframework-mock-event]
+\begin{lstlisting}[language=JavaScript,caption={Sending a mock event to the bot},label=listing:botframework-mock-event]
 const event = {
 	address: { bot: { id: '0' }, user: { id: 0 } },
 	agent: 'botbuilder',
@@ -153,9 +153,9 @@ connector.processEvent(event);
 
 \subsection{Dialogs}
 
-One of the key concepts in the Bot Builder SKD are dialogs. Dialogs help the developer manage the conversational logic and is a fundamental part of developing a chatbot in the bot framework.
+One of the key concepts in the Bot Builder SKD are dialogs. Dialogs help the developer manage the conversational logic and are a fundamental part of developing a chatbot in the Bot Framework.
 
-A dialog can be compared to a function. It can perform a specific task and be called at any point in time. Dialogs can also contain other dialogs to advance and branch off a conversation.
+A dialog can be compared to a function. It can perform a specific task and be called at any point in time or get triggered using an action. Dialogs can also contain other dialogs to advance and branch off a conversation.
 
 \subsection{Waterfall}
 
@@ -170,22 +170,22 @@ To help the bot wait for a reply Microsoft provides developers with so called `P
 \subsubsection{Types}
 
 \renewcommand{\arraystretch}{1}
-\begin{table}[h]
+\begin{table}[ht]
 	\centering
 	\begin{tabular}{|l|l|}
 		\hline
-		text & time \\
-		confirm & choice \\
-		number & attachment \\
+		text    & time       \\
+		confirm & choice     \\
+		number  & attachment \\
 		\hline
 	\end{tabular}
 	\caption{Prompt types}
 	\label{tab:prompt-types}
 \end{table}
 
-When used inside of a waterfall, the reply of the user will be passed to the next step using the `results' object. Another argument called `next' can be used as a method to skip to the next step of the waterfall.
+When used inside of a waterfall (\ref{listing:waterfall-and-prompt}), the reply of the user will be passed to the next step using the `results' object. Another argument called `next' can be used as a method to skip to the next step of the waterfall.
 
-\begin{lstlisting}[language=JavaScript,caption=2-step waterfall using a prompt,label=listing:waterfall-and-prompt]
+\begin{lstlisting}[language=JavaScript,caption={2-step waterfall using a prompt},label=listing:waterfall-and-prompt]
 bot.dialog('orderButtonClick', [
 	(session) => {
 		builder.Prompts.choice(session, 'Thirsty? Want to order any drinks?', 'Yes|No drinks', {
@@ -204,15 +204,15 @@ bot.dialog('orderButtonClick', [
 
 \subsection{User actions}
 
-There are multiple ways to handle user input other than the usage of prompts. One way of doing so is by using actions. Actions are bound to specific dialogs.
+There are multiple ways to handle user input other than the usage of prompts. One way of doing so is by using actions. Actions can be bound to specific dialogs in order to handle input.
 
-\subsubsection{Triggeraction}
+\subsubsection{triggerAction}
 
-The most common action is a `triggerAction'. This can be connected to a dialog to invoke it whenever the user inputs a matched term. Whenever this is triggered, the dialog stack is cleared and the invoked dialog will be the new first dialog on the stack.
+The most common action is a `triggerAction' (\ref{listing:triggerAction}). This can be connected to a dialog to invoke it whenever the user inputs a matched term. Whenever this is triggered, the dialog stack is cleared and the invoked dialog will be the new first dialog on the stack.
 
 This behavior isn't always desired when the conversation needs to be temporarily redirected and resumed later on. That's where the `onSelectAction' option comes in. This allows the developer to program different behavior to the action.
 
-\begin{lstlisting}[language=JavaScript,caption=triggerAction being bound to a dialog and its behavior overwritten by onSelectAction,label=listing:triggerAction]
+\begin{lstlisting}[language=JavaScript,caption={triggerAction being bound to a dialog and its behavior overwritten by onSelectAction},label=listing:triggerAction]
 bot.dialog('help', function (session, args, next) {
 	//Send a help message
 	session.endDialog("Global help menu.");
@@ -229,25 +229,25 @@ bot.dialog('help', function (session, args, next) {
 });
 \end{lstlisting}
 
-\subsubsection{BeginDialogAction}
+\subsubsection{beginDialogAction}
 
 A specific dialog can also be attached to a dialog using the `beginDialogAction' action. This can be useful to send the user to a contextual action. An example of this is when the user asks for specific help in a dialog context. When triggered, it will run the specified dialog and when that dialog finishes, resume at the step of the dialog it was bound to.
 
-This is similar to calling the `session.beginDialog('dialogid')' method from inside any dialog.
+This is similar to calling the `session.beginDialog('dialogid')' method.
 
-\subsubsection{ReloadAction}
+\subsubsection{reloadAction}
 
 The reloadAction is somewhat self-explanatory. Binding this to a dialog means it will restart the dialog whenever the action is invoked.
 
-\subsubsection{CancelAction}
+\subsubsection{cancelAction}
 
 This action cancels the dialog it is bound to when triggered. The parent dialog will also receive an indication the child dialog was canceled.
 
-\subsubsection{EndConversationAction}
+\subsubsection{endConversationAction}
 
 Similar to the cancelAction action, the endConversation action will end the entire conversation when triggered. This clears the entire dialog stack and persisted state data.
 
-\subsubsection{CustomAction}
+\subsubsection{customAction}
 
 Unlike all the other actions, a customAction does not have any default action defined. It's up to the developer to define what it should do. The main benefit of using these is providing quick answers to a user without manipulating the dialog stack at all.
 
@@ -263,7 +263,7 @@ There are many different kinds of messages the bot can send to the user. This ra
 
 \subsubsection{Channel Inspector}
 
-The channel inspector~\cite{channel-inspector} is a tool developed by Microsoft to see what all of the message types look like on different platforms. A Skype card will different to a Messenger card for example. It also provides users with notes and limitations on a specific message type for a platform.
+The channel inspector~\cite{channel-inspector} is a tool developed by Microsoft to see what all of the message types look like on different platforms. A Skype card will be different to a Messenger card for example. It also provides users with notes and limitations on a specific message type for a platform.
 
 \begin{figure}[ht]
 	\centering
@@ -284,9 +284,9 @@ To construct more complicated messages, a `Message' object will have to be creat
 
 \subsubsection{Attachments}
 
-There are two main types of attachments that can be added to a message. There are media and files, this involves files like images audio or videos. A second type is a card. As seen in the example in the figure of the Channel Inspector~\ref{fig:channel-inspector}.
+There are two main types of attachments that can be added to a message. There are media and files, this involves files like images audio or videos. A second type is a card. As seen in the example in the figure of the Channel Inspector (\ref{fig:channel-inspector}).
 
-\begin{lstlisting}[language=JavaScript,caption=Receiving an attachment from the user and sending an image,label=listing:receive-attachment]
+\begin{lstlisting}[language=JavaScript,caption={Receiving an attachment from the user and sending an image},label=listing:receive-attachment]
 // Getting an attachment
 const msg = session.message;
 const attachment = msg.attachments[0];
@@ -307,13 +307,13 @@ session.send({
 
 \subsubsection{Cards}
 
-Many different types of cards are available. Multiple cards can be added to a single message and displayed using a carousel, as seen in listing~\ref{listing:send-hero-card}.
+Many different types of cards are available (\ref{tab:card-types}). Multiple cards can be added to a single message and displayed using a carousel, as seen in listing~\ref{listing:send-hero-card}.
 
 \renewcommand{\arraystretch}{2}
-\begin{table}[h]
+\begin{table}[ht]
 	\centering
 	\begin{tabular}{p{0.2\textwidth} |p{0.8\textwidth}}
-		Hero Card      & The most common one, usually contains one big image, text and one or more buttons.             \\
+		Hero Card      & The most common card, usually contains one big image, text and one or more buttons.            \\
 		Thumbnail Card & Contains a single thumbnail, text and one or more buttons.                                     \\
 		Animation Card & A card for gifs or short videos.                                                               \\
 		Audio Card     & A card for an audio file.                                                                      \\
@@ -347,13 +347,13 @@ const msg = new builder.Message(session)
 
 The chatbot created for this case study makes use of the HeroCard to represent products. Each product has a title, price, image and button `Add to order'.
 
-\subsection{Storage}
+\subsection{Data Storage}
 
 Managing state data can be approached in several ways. State data could represent a user and its preferences over time, or it could be data that is only temporarily stored during the conversation, like the current order for a user.
 
-Microsoft recommends the usage of the Bot Builder Framework's own in-memory data storage for testing and prototype bots. But for production bots they recommend the developers to implement their own storage solution, or use on of the Azure extensions to store data in \Gls{TableStorage}\cite{table-storage}, \Gls{CosmosDB}\cite{cosmosdb}, or SQL.
+Microsoft recommends the usage of the Bot Builder Framework's own in-memory data storage for testing and prototype bots. But for production bots they recommend the developers to implement their own storage solution, or use one of the Azure extensions to store data in \Gls{TableStorage}~\cite{table-storage}, \Gls{CosmosDB}~\cite{cosmosdb}, or SQL.
 
-If one of the Azure integrations is implemented, the methods used to set and persist data are the same as the In-memory data storage.
+If one of the Azure integrations is implemented, the methods used to set and persist data are the same as the in-memory data storage.
 
 \subsubsection{In-memory data storage, CosmosDB or Table Storage}
 
@@ -367,7 +367,7 @@ const bot = new builder.UniversalBot(connector, [..waterfall steps..]).set('stor
 
 As seen in listing~\ref{listing:in-memory-storage}, the storage is set when creating the bot instance. The setup when using one of the Azure extensions is very similar, the developer simply imports a package and sets some API keys before adding the storage to the bot.
 
-\begin{table}[h]
+\begin{table}[ht]
 	\centering
 	\begin{tabular}{p{0.30\textwidth} | p{0.15\textwidth} | p{0.55\textwidth}}
 		Container               & Scope        & Description                                                                           \\
@@ -381,7 +381,7 @@ As seen in listing~\ref{listing:in-memory-storage}, the storage is set when crea
 	\label{tab:storage-containers}
 \end{table}
 
-As seen in table~\ref{tab:storage-containers} there are several different containers which can be used to store data. The `userData' container can be used to store user preferences and persist them across conversations. The `conversationData' and `privateConversationData' containers could be used to store the user's current order, as that is only relevant to the current conversation. The `dialogData' container is useful for data relevant to the dialog.
+As seen in table~\ref{tab:storage-containers} there are several different containers which can be used to store data. The `userData' container can be used to store user preferences and persist them across conversations. The `conversationData' and `privateConversationData' containers can be used to store the user's current order, because it's only relevant to the current conversation. The `dialogData' container is useful for data relevant to the dialog.
 
 Setting or getting this data is as easy as it gets. Once set up, the containers can be accessed anywhere using the `session' object as seen in listing~\ref{listing:storage-containers}.
 
